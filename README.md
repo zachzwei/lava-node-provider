@@ -1,4 +1,4 @@
-Please go to https://docs.lavanet.xyz/ for the official documenation for Lava.
+Please go to https://docs.lavanet.xyz/ for the official documenations.
 
 # Lava Documentation 📕
 

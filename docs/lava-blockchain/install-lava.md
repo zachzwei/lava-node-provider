@@ -56,47 +56,4 @@ make install-all
 
 <br />
 
-### Install a Specific Binary 🔧
-
-Select between `lavad`, `lavap`, and `lavavisor` and enter the following:
-
-```bash
-git clone https://github.com/lavanet/lava.git
-cd lava
-LAVA_BINARY=<name-of-binary> make install
-```
-
-✅ Run `<name-of-binary> --help` to ensure it installed properly.
-
-<br />
-
-### Build all Binaries Locally 🗜️
-
-Enter the following commands:
-
-```bash
-git clone https://github.com/lavanet/lava.git
-cd lava
-make build-all
-```
-
-📁 You will now have all three binaries (`lavad`,`lavap`,`lavavisor`) in `./build/`
-
-✅ Run `lavad version && lavap version` to ensure you've gotten the [latest releases](https://github.com/lavanet/lava/releases)!
-
-<br />
-
-
-### Build a Specific Binary Locally 🔨
-
-Select between `lavad`, `lavap`, and `lavavisor` and enter the following:
-
-```bash
-git clone https://github.com/lavanet/lava.git
-cd lava
-LAVA_BINARY=<name-of-binary> make build
-```
-
-📁 You will now have the binary of your choice in `./build/`
-
-<br />
+[Setup Node](

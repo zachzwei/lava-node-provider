@@ -8,8 +8,7 @@ Please go to https://docs.lavanet.xyz/ for the official documenation for Lava.
 This is a simplified guide in creating a Lava Node and Provider.
 
 ###
-Lava Node Setup guide:
-
+[Lava Node Setup](https://github.com/zachzwei/lava_docs/edit/main/docs/lava-blockchain/install-lava.md)
 ###
 Lava Provider Setup guide:
 

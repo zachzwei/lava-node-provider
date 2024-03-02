@@ -9,9 +9,8 @@ Go here https://docs.lavanet.xyz/wallet and follow the guide for installing Kepl
 You can use that to receive your Lava Testnet tokens from Lava team.
 
 ### Adding a Key (Wallet) to Node
-:::caution
+
 Ensure you understand the implications of storing your private key in your chosen keyring.
-:::
 
 1. Substitute $ACCOUNT_NAME with your desired account name:
 ```bash
@@ -20,9 +19,9 @@ ACCOUNT_NAME="name_here"
 $current_lavad_binary keys add $ACCOUNT_NAME
 ```
 
-:::danger
+
 Securely store your mnemonic in a safe location, as it cannot be retrieved once lost.
-:::
+
 
 2. Verify and locate your account in the keys list:
 ```bash
@@ -30,9 +29,9 @@ $current_lavad_binary keys show $ACCOUNT_NAME
 $current_lavad_binary keys list
 ```
 
-:::caution Pencils out 📝
+Pencils out 📝
 Your public address begins with lava@.
-:::
+
 
 #### Account Recovery
 

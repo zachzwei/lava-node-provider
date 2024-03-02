@@ -1,8 +1,3 @@
----
-sidebar_position: 2
-slug: /install-lava
-title: Build & Install
----
 
 # Build & Install Lava Binaries
 

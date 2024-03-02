@@ -1,11 +1,6 @@
----
-sidebar_position: 2
-slug: /testnet-manual-cosmovisor
-title: Option A - With Cosmovisor
----
-import RoadmapItem from '@site/src/components/RoadmapItem';
 
-# Join testnet - Manual setup with Cosmovisor
+
+# Manual Node setup with Cosmovisor
 ## Prerequisites
 
 1. Verify [hardware requirements](reqs) are met
@@ -13,25 +8,34 @@ import RoadmapItem from '@site/src/components/RoadmapItem';
     - Note: You may need to run as `sudo`
     - Required packages installation
         
-        ```bash
+        
         ### Packages installations
+      ```
         sudo apt update # in case of permissions error, try running with sudo
         sudo apt install -y unzip logrotate git jq sed wget curl coreutils systemd
-        # Create the temp dir for the installation
+      ```
+        ### Create the temp dir for the installation
+      ```
         temp_folder=$(mktemp -d) && cd $temp_folder
         ```
         
     - Go installation
         
-        ```bash
         ### Configurations
+      ```
         go_package_url="https://go.dev/dl/go1.20.5.linux-amd64.tar.gz"
         go_package_file_name=${go_package_url##*\/}
-        # Download GO
+      ```
+        ### Download GO
+      ```
         wget -q $go_package_url
-        # Unpack the GO installation file
+      ```
+        ### Unpack the GO installation file
+      ```
         sudo tar -C /usr/local -xzf $go_package_file_name
-        # Environment adjustments
+      ```
+        ### Environment adjustments
+      ```
         echo "export PATH=\$PATH:/usr/local/go/bin" >>~/.profile
         echo "export PATH=\$PATH:\$(go env GOPATH)/bin" >>~/.profile
         source ~/.profile
@@ -57,20 +61,21 @@ import RoadmapItem from '@site/src/components/RoadmapItem';
     
     Download the configuration files needed for the installation
     
-    ```bash
-    # Download the installation setup configuration
+    ```
     git clone https://github.com/lavanet/lava-config.git
     cd lava-config/testnet-2
-    # Read the configuration from the file
-    # Note: you can take a look at the config file and verify configurations
+    ```
+    ### Read the configuration from the file
+    ### Note: you can take a look at the config file and verify configurations
+    ```
     source setup_config/setup_config.sh
     ```
     
 - Set app configurations
         
     Copy lavad default config files to config Lava config folder
-    
-    ```bash
+
+    ```
     echo "Lava config file path: $lava_config_folder"
     mkdir -p $lavad_home_folder
     mkdir -p $lava_config_folder
@@ -82,8 +87,7 @@ import RoadmapItem from '@site/src/components/RoadmapItem';
 
 - Set the genesis file in the configuration folder
     
-    ```bash
-    # Copy the genesis.json file to the Lava config folder
+    ```
     cp genesis_json/genesis.json $lava_config_folder/genesis.json
     ```
 
@@ -96,17 +100,16 @@ The following sections will describe how to install Cosmovisor for automating th
 
 - Set up cosmovisor to ensure any future upgrades happen flawlessly. To install Cosmovisor:
     
-    ```bash
+    ```
     go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@v1.0.0
-    # Create the Cosmovisor folder and copy config files to it
     mkdir -p $lavad_home_folder/cosmovisor/genesis/bin/
-    # Download the genesis binary
     wget -O  $lavad_home_folder/cosmovisor/genesis/bin/lavad "https://github.com/lavanet/lava/releases/download/v0.21.1.2/lavad-v0.21.1.2-linux-amd64"
     chmod +x $lavad_home_folder/cosmovisor/genesis/bin/lavad
     ```
 
-    ```bash
-    # Set the environment variables
+
+- Set the environment variables
+    ```
     echo "# Setup Cosmovisor" >> ~/.profile
     echo "export DAEMON_NAME=lavad" >> ~/.profile
     echo "export CHAIN_ID=lava-testnet-2" >> ~/.profile
@@ -118,8 +121,8 @@ The following sections will describe how to install Cosmovisor for automating th
     source ~/.profile
     ```
 
-    ```bash
-    # Initialize the chain
+  - Initialize the chain
+    ```
     $lavad_home_folder/cosmovisor/genesis/bin/lavad init \
     my-node \
     --chain-id lava-testnet-2 \
@@ -133,15 +136,12 @@ The following sections will describe how to install Cosmovisor for automating th
     lstat /home/ubuntu/.lava/cosmovisor/current/upgrade-info.json: no such file or directory
     :::
 
-    ```bash
+    ```
     cosmovisor version
     ```
     
     Create the systemd unit file
-    
-    ```bash
-    # Create Cosmovisor unit file
-
+    ```
     echo "[Unit]
     Description=Cosmovisor daemon
     After=network-online.target
@@ -166,13 +166,14 @@ The following sections will describe how to install Cosmovisor for automating th
 
 ### Download the latest Lava data snapshot (_optional_) {#snapshots}
 
-_Coming soon_
-
+    curl -L https://snapshots.kjnodes.com/lava-testnet/snapshot_latest.tar.lz4 | tar -Ilz4 -xf - -C $HOME/.lava
+    mv $HOME/.lava/priv_validator_state.json.backup $HOME/.lava/data/priv_validator_state.json
+    
+    
 ### Enable and start the Cosmovisor service
     
 - Configure the Cosmovisor service to run on boot, and start it
-    ```bash
-    # Enable the cosmovisor service so that it will start automatically when the system boots
+    ```
     sudo systemctl daemon-reload
     sudo systemctl enable cosmovisor.service
     sudo systemctl restart systemd-journald
@@ -187,12 +188,12 @@ _Coming soon_
 Make sure `cosmovisor` is running by checking the state of the cosmovisor service:
 
 - Check the status of the service
-    ```bash
+    ```
     sudo systemctl status cosmovisor
     ```
 - To view the service logs - to escape, hit CTRL+C
 
-    ```bash
+    ```
     sudo journalctl -u cosmovisor -f
     ```
 
@@ -200,19 +201,11 @@ Make sure `cosmovisor` is running by checking the state of the cosmovisor servic
 
 Note the location of `lavad` now exists under `cosmovisor` path:
 
-```bash
-# Check if the node is currently in the process of catching up
+```
 $HOME/.lava/cosmovisor/current/bin/lavad status | jq .SyncInfo.catching_up
 ```
+You will get a response `false` to indicate that the node is fully synced.
 
-## Welcome to Lava Testnet 🌋
-
-:::tip Joined Testnet? Be a validator!
 You are now running a Node in the Lava network 🎉🥳! 
 
-Congrats, happy to have you here 😻 Celebrate it with us on Discord.
 
-When you're ready, start putting the node to use **as a validator**:
-[<RoadmapItem icon="🧑‍⚖️" title="Power as a Validator" description="Validate blocks, secure the network, earn rewards"/>](/validator-manual#account)
-
-:::

@@ -1,10 +1,4 @@
----
-slug: /provider-tls
-title: TLS Setup
----
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 # Provider TLS Setup Guide
 
@@ -24,10 +18,6 @@ All providers on `lava-testnet-2` must use a domain name and TLS (1.3). You must
 | `lavap` is installed & configured | ✅  |
 | account with `ulava` balance      | ✅  |
 
-
-## 📝 Written Guide (~45m)
-
-<br />
 
 ### 🅰️ Change the A Record on your Domain
 
@@ -75,14 +65,18 @@ sudo apt install certbot net-tools nginx python3-certbot-nginx -y
 
 ### 📮 Generate Certificate 
 
+Note: 
+✅ `your-site.com` refers to the Domain name that you purchased and configured.
+
 Next, we need to actually create the `TLS certificate` via the certifying authority. This process is automated by `certbot`.
 
 
 Use `certbot` to create a certificate:
 
 ```
-sudo certbot certonly -d you.xyz -d lava.you.xyz -d eth.you.xyz
+sudo certbot certonly -d your-site.com -d lava.your-site.com -d eth.your-site.com
 ```
+
 
 Note, you will need one `-d` flag for each subdomain you created as an `A-Record`. Even if you opted to create a Single Record, you still need to indicate a subdomain for each provider process you will run. We use the filler `you.xyz` as an example above.
 
@@ -91,21 +85,23 @@ You may be met with several prompts. Use `nginx` or Nginx Web Server Plugin when
 
 ### 💻 Validate Certificate
 
+Note: 
+✅ `your-site.com` refers to the Domain name that you purchased and configured.
+
 Let's make sure your certificate successfully installed! ✅ Input the following command:
 
-```sudo certbot certificates```
+```
+sudo certbot certificates
+```
 
 Keep track of your output. If your certificate generation was successful, it should look as following:
 
-```
-Found the following certs:
+`Found the following certs:
   Certificate Name: your-site.com
     Domains: your-site.com eth.your-site.com lava.your-site.com
     Expiry Date: 2023-11-07 14:37:29+00:00 (VALID: 84 days)
     Certificate Path: /etc/letsencrypt/live/your-site.com/fullchain.pem
-    Private Key Path: /etc/letsencrypt/live/your-site.com/privkey.pem
-
-```
+    Private Key Path: /etc/letsencrypt/live/your-site.com/privkey.pem`
 
 You'll need both `Certificate Path` and `Private Key Path` for your next step.
 
@@ -113,37 +109,24 @@ You'll need both `Certificate Path` and `Private Key Path` for your next step.
 
 ### 🗃️ Add an Nginx Config for Each Domain
 
+Note: 
+✅ `your-site.com` refers to the Domain name that you purchased and configured.
+
 Lava recommends running each chain under a separate provider process. This will separate error logs and protect against complete provider failure in the case of a problematic provider process. The first step of this is to create different nginx routes for each chain.
 
 For each chain that you want to support, you will need to create a separate `nginx` config file. 
 `cd` into `/etc/nginx/sites-available/` and create a `server` file for each chain. You will need to select an open port for each chain. `Nginx` will use these config files to create your routes.
 
-<Tabs>
-<TabItem value="eth_ex" label="eth nginx server">
-
-🟢 ```sudo nano eth_server``` 
-
+```
+cd
+cd /etc/nginx/sites-available/
+```
+Create the server file. For this guide, we will focus on `lava_server`
 
 ```
-server {
-    listen 443 ssl http2;
-    server_name eth.your-site.com;
-
-    ssl_certificate /etc/letsencrypt/live/your-site.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/your-site.com/privkey.pem;
-    error_log /var/log/nginx/debug.log debug;
-
-    location / {
-        proxy_pass http://127.0.0.1:2223;
-        grpc_pass 127.0.0.1:2223;
-    }
-}
+sudo nano lava_server
 ```
-
-</TabItem>
-<TabItem value="lav_ex" label="lava nginx server">
-
-🟢 ```sudo nano lava_server```
+Copy and paste the text below. Save your `lava_server` file.
 
 ```
 server {
@@ -160,34 +143,6 @@ server {
     }
 }
 ```
-
-
-</TabItem>
-
-<TabItem value="Caddy" label="caddy example">
-
-:::warning
-The below caddy example is to provide guidance only. The recommended route is through `nginx`. Although making a provider functional with Caddy is possible you are proceeding at your own risk and with your own expertise.
-:::
-
-
-```
-https://your-site.com:443 {
-   reverse_proxy {
-    to h2c://127.0.0.1:2221
-    transport http  {
-        versions h2c 2
-    }
-   }
-   log {
-       output file /var/log/caddy/your-site.com.log
-   }
-}
-```
-
-</TabItem>
-
-</Tabs>
 
 In most cases, after creating a configuration file in accessible sites, you need to create a symbolic link to this file in the enabled sites directory. This can be done with a command like:
 ```
@@ -210,10 +165,10 @@ sudo nginx -t
 ```
 
 🖳 Expected Output:
-```
-nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-nginx: configuration file /etc/nginx/nginx.conf test is successful
-```
+
+`nginx: the configuration file /etc/nginx/nginx.conf syntax is ok`
+
+`nginx: configuration file /etc/nginx/nginx.conf test is successful`
 
 <br />
 
@@ -235,14 +190,13 @@ Need a template? A default `rpcprovider.yml` configuration is available in `~/la
 
 Per earlier advisement, we'll create one `.yml` per chain we plan to support. Each one of these `.yml` files will function as the configuration for a distinct provider process. In case of our example, we'll create a `lava-provider.yml` and a `eth-provider.yml`.
 
+Create the `lava-provider.yml` file
+```
+nano lava-provider.yml
+```
+Copy and paste the text below. Save your `lava-provider.yml` file.
 
-<Tabs>
-<TabItem value="lava_yml" label="lava-provider">
-
-`nano lava-provider.yml`
-
-```yaml
-
+```
 endpoints:
     - api-interface: tendermintrpc
       chain-id: LAV1
@@ -268,48 +222,14 @@ endpoints:
         url: http://127.0.0.1:1317
 ```
 
-</TabItem>
-<TabItem value="eth_yml" label="eth-provider">
-
-`nano eth-provider.yml`
-
-```yaml
-
-endpoints:
-    - api-interface: jsonrpc
-      chain-id: ETH1
-      network-address:
-        address: 127.0.0.1:2223
-        disable-tls: true
-      node-urls: 
-        url: wss://ethereum-rpc.com/ws/
-```
-
-</TabItem>
-</Tabs>
-
 Once we've created these files we can move onto starting the processes!
 <br />
 
 ### 🏁 Start the Provider Process(es)
 
-In this example, we use the built-in terminal multiplexer `screen` to run multiple provider processes. Begin by typing `screen`. But you can also use a different multiplexer, e.g. `tmux`.
-
-⏫ To start the Ethereum process
-```bash
-screen -S eth-provider
-
-# This will take us to a separate terminal where we can start the provider process:
-
-lavap rpcprovider eth-provider.yml --from your_key_name_here --geolocation 1 --chain-id lava-testnet-2 --log_level debug
-```
-Press `CTRL+ad` to detach from the `eth-provider` screen. <br />
 ⏫ To start the Lava provider process
-```bash
-screen -S lava-provider
 
-# This will take us to a separate terminal where we can start the provider process:
-
+```
 lavap rpcprovider lava-provider.yml --from your_key_name_here --geolocation 1 --chain-id lava-testnet-2 --log_level debug
 ```
 
@@ -327,9 +247,11 @@ The syntax on your `.yml` files must be precise. Misplaced or invisible characte
 
 ### ☑️ Test the Provider Process!
 
-Run the following commands one at a time!
+Run the following command:
 
-`lavap test rpcprovider --from your_key_name_here --endpoints "your-site:443,LAV1"`
+```
+lavap test rpcprovider --from your_key_name_here --endpoints "your-site:443,LAV1"
+```
 
 🖳 Expected output:
 
@@ -350,43 +272,24 @@ Run the following commands one at a time!
 ```
 
 
-`lavap test rpcprovider --from your_key_name_here --endpoints "your-site:443,ETH1"`
-
-🖳 Expected output:
-
-```
-📄----------------------------------------✨SUMMARY✨----------------------------------------📄
-
-🔵 Tests Passed:
-🔹ETH1-jsonrpclatest block: 0x1115fe9
-
-🔵 Tests Failed:
-🔹None 🎉! all tests passed ✅
-
-🔵 Provider Port Validation:
-🔹✅ All Ports are valid! ✅
-
-```
-
-
 ### 🔗‍💥 Stake the Provider on Chain
 
 Use a variation of the following command to stake on chain; the minimum stake is `50000000000ulava`
 
 ```bash
-lavap tx pairing stake-provider ETH1 "50000000000ulava" "eth.your-site:443,1" 1 -y --from your_key_name_here --provider-moniker your-provider-moniker-1 --gas-adjustment "1.5" --gas "auto" --gas-prices "0.0001ulava"
+lavap tx pairing stake-provider LAV1 "50000000000ulava" "lava.your-site:443,1" 1 [validator] -y --from your_key_name_here --provider-moniker your-provider-moniker-1 --gas-adjustment "1.5" --gas "auto" --gas-prices "0.0001ulava" --chain-id lava-testnet-2
 ```
 
-```bash
-lavap tx pairing stake-provider LAV1 "50000000000ulava" "lava.your-site:443,1" 1 -y --from your_key_name_here --provider-moniker your-provider-moniker-1 --gas-adjustment "1.5" --gas "auto" --gas-prices "0.0001ulava"
-```
+Some notes:
+* `[validator]` you need to indicate a validator address, choose here: https://lava.explorers.guru/validators
+* `--from` should be followed by the key name of your funded account that you will use to stake your provider
+* `--provider-moniker` will be the name of your provider
+
 
 ### ☑️ Test the Providers again! 
 
 ```bash
 lavap test rpcprovider --from your_key_name_here --endpoints "lava.your-site:443,LAV1"
-
-lavap test rpcprovider --from your_key_name_here --endpoints "eth.your-site:443,ETH1"
 ```
 You can also get useful information on the setup using:
 

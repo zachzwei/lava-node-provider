@@ -56,4 +56,6 @@ make install-all
 
 <br />
 
-[Setup Node](https://github.com/zachzwei/lava_docs/blob/main/docs/lava-blockchain/join-testnet-manual-cosmovisor.md)
+Next Step: [Setup Node](https://github.com/zachzwei/lava_docs/blob/main/docs/lava-blockchain/join-testnet-manual-cosmovisor.md)
+
+[Back to Main](https://github.com/zachzwei/lava_docs)

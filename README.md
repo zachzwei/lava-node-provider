@@ -10,7 +10,7 @@ This is a simplified guide in creating a Lava Node and Provider.
 ###
 [Lava Node Setup](https://github.com/zachzwei/lava_docs/blob/main/docs/lava-blockchain/install-lava.md)
 ###
-Lava Provider Setup guide:
+[Lava Provider Setup](https://github.com/zachzwei/lava_docs/blob/main/docs/provider/provider-tls.md)
 
 
 

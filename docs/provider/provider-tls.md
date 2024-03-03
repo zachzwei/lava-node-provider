@@ -277,7 +277,7 @@ lavap test rpcprovider --from your_key_name_here --endpoints "your-site:443,LAV1
 Use a variation of the following command to stake on chain; the minimum stake is `50000000000ulava`
 
 ```bash
-lavap tx pairing stake-provider LAV1 "50000000000ulava" "lava.your-site:443,1" 1 [validator] -y --from your_key_name_here --provider-moniker your-provider-moniker-1 --gas-adjustment "1.5" --gas "auto" --gas-prices "0.0001ulava" --chain-id lava-testnet-2 delegate-limit 0ulava
+lavap tx pairing stake-provider LAV1 "50000000000ulava" "lava.your-site:443,1" 1 [validator] -y --from your_key_name_here --provider-moniker your-provider-moniker-1 --gas-adjustment "1.5" --gas "auto" --gas-prices "0.0001ulava" --chain-id lava-testnet-2 --delegate-limit 0ulava
 ```
 
 Some notes:

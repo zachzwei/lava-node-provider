@@ -211,15 +211,15 @@ endpoints:
       network-address:
         address: 127.0.0.1:2224
         disable-tls: true
-      node-urls: 
-        url: 127.0.0.1:9090
+      node-urls:
+        url: public-rpc-testnet2.lavanet.xyz:9090
     - api-interface: rest
       chain-id: LAV1
       network-address:
         address: 127.0.0.1:2224
         disable-tls: true
-      node-urls: 
-        url: http://127.0.0.1:1317
+      node-urls:
+        url: https://rest-public-rpc.lavanet.xyz:443
 ```
 
 Once we've created these files we can move onto starting the processes!

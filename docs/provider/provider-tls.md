@@ -297,5 +297,32 @@ You can also get useful information on the setup using:
 lavap q pairing account-info --from your_key_name
 ```
 
+### ✅ Updating Lava Provider
+
+Since you are running `lavap` without `lavavisor` if there are updates necessary, you would have to manually run an update.
+Here are the steps to do so.
+
+1. Close all running Provider process `CTRL+C`
+2. Delete the current `lava` folder and download the most recent version.
+   Check the [latest release](https://github.com/lavanet/lava/releases) available.
+```
+cd $HOME
+rm -rf lava
+git clone https://github.com/lavanet/lava.git
+cd lava
+git checkout <check newest release>
+```
+3. Build the `lavap` binaries.
+```
+export LAVA_BINARY=lavap
+make install
+```
+4. Check `lavap` version
+```
+lavap version
+```
+5. Run Test to confirm. Then if all test passed, run Provider process.
+
+
 
 ❗ If you have any further issues, do not hesitate to venture to our [discord](https://discord.com/invite/Tbk5NxTCdA) where you can get better assistance!
